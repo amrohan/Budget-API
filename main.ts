@@ -9,9 +9,11 @@ import * as accountController from './controllers/accountController';
 import * as categoryController from './controllers/categoryController';
 import * as timezoneController from './controllers/timezoneController';
 import * as userController from './controllers/userController';
+import { authMiddleware } from "./helpers/middleware";
 
 const app = express();
-app.use(bodyParser.json(), cookieParser(), cors(), (req, res, next) => {
+const PORT = 3000 || process.env.PORT;
+app.use(bodyParser.json(), cookieParser(), cors(), authMiddleware, (req, res, next) => {
     console.log(`${req.method} - ${req.url} ${req.hostname}`);
     next();
 });
@@ -45,12 +47,11 @@ app.post('/timezone', timezoneController.setTimeZone)
 
 const startServer = async () => {
     await connect(process.env.MONGO_URL!, process.env.MongoDbName!)
-
     app.listen(
-        3000, () => {
+        PORT, () => {
             console.log('Api is started');
         }
     )
 }
-
-startServer()
+// startServer()
+export default startServer
