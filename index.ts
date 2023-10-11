@@ -25,7 +25,7 @@ app.route('/users/:id').get(userController.getUserById).put(userController.updat
 
 // transactions
 app.route('/transactions').get(transactionController.all).post(transactionController.create)
-app.route('/transactions/:id').put(transactionController.updateByTransactionId).delete(transactionController.deleteByTransactionId)
+app.route('/transactions/:id').get(transactionController.getTransactionByTransactionId).put(transactionController.updateByTransactionId).delete(transactionController.deleteByTransactionId)
 app.get('/transactions/:userId', transactionController.getTransactionsByUserId)
 app.get('/transactions/user/:userId', transactionController.getTransactionByMonthandYear)
 
