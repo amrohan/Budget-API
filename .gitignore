@@ -46,5 +46,4 @@ yarn-error.log*
 .npmrc
 
 # TypeScript configuration
-tsconfig.json
 tsconfig.tsbuildinfo
