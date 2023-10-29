@@ -13,9 +13,15 @@ import { authMiddleware } from "./helpers/middleware";
 
 const app = express();
 const PORT = 3000 || process.env.PORT;
+
+app.get('/', (req, res) => {
+  res.send('Hello Buddy');
+});
+
 app.use(bodyParser.json(), cookieParser(), cors(), authMiddleware, (req, res, next) => {
-    console.log(`${req.method} - ${req.url} ${req.hostname}`);
-    next();
+  // console.log(`${req.method} - ${req.url}`);
+  console.log("Request Made")
+  next();
 });
 
 
@@ -25,8 +31,8 @@ app.route('/users/:id').get(userController.getUserById).put(userController.updat
 
 // transactions
 app.route('/transactions').get(transactionController.all).post(transactionController.create)
-app.route('/transactions/:id').put(transactionController.updateByTransactionId).delete(transactionController.deleteByTransactionId)
-app.get('/transactions/:userId', transactionController.getTransactionsByUserId)
+app.route('/transactions/:id').get(transactionController.getTransactionByTransactionId).put(transactionController.updateByTransactionId).delete(transactionController.deleteByTransactionId)
+app.get('/transactions/all/:userId', transactionController.getTransactionsByUserId)
 app.get('/transactions/user/:userId', transactionController.getTransactionByMonthandYear)
 
 
@@ -46,11 +52,11 @@ app.get('/timezone', timezoneController.getTimeZone)
 app.post('/timezone', timezoneController.setTimeZone)
 
 const startServer = async () => {
-    await connect(process.env.MONGO_URL!, process.env.MongoDbName!)
-    app.listen(
-        PORT, () => {
-            console.log('Api is started');
-        }
-    )
+  await connect(process.env.MONGO_URL!, process.env.MongoDbName!)
+  app.listen(
+    PORT, () => {
+      console.log('Api is started');
+    }
+  )
 }
 startServer()
