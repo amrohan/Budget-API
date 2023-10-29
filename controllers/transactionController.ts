@@ -20,6 +20,15 @@ export const getTransactionByTransactionId = async (req: ExpressRequest, res: Ex
   }
 }
 
+export const getTransactionByTransactionId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+    try {
+        const doc = await Transactions.getTransactionByTransactionId(req.params.id);
+        res.json(doc);
+    } catch (error) {
+        next()
+    }
+}
+
 export const getTransactionsByUserId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
   try {
     const doc = await Transactions.getTransactionsByUserId(req.params.userId);
