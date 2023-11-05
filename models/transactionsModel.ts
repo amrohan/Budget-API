@@ -29,10 +29,6 @@ export const getTransactionByTransactionId = (id: string): Promise<transaction |
   return db.get().collection('transactions').findOne<transaction>({ _id: new ObjectId(id) })
 }
 
-export const getTransactionByTransactionId = (id: string): Promise<transaction | null> => {
-    return db.get().collection('transactions').findOne<transaction>({ _id: new ObjectId(id) })
-}
-
 export const getTransactionByMonthandYear = async (userId: string, startOfMonthIST: string, endOfMonthIST: string): Promise<transaction[]> => {
   return db.get().collection('transactions').find<transaction>({
     userId,
