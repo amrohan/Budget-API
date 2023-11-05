@@ -12,7 +12,7 @@ import * as userController from './controllers/userController';
 import { authMiddleware } from "./helpers/middleware";
 
 const app = express();
-const PORT = 3000 || process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.get('/', (req, res) => {
   res.send('Hello Buddy');
