@@ -1,21 +1,28 @@
-import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from 'express';
+import {
+  NextFunction,
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from "express";
 
+import jwt from "jsonwebtoken";
 
-export const authMiddleware = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
+export const authMiddleware = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
+  const token = req.cookies.token;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).send({ message: "Please send a valid token" });
-        return;
-    }
+  if (!token) {
+    res.status(401).send({ message: "You are not authorized" });
+    return;
+  }
 
-    const token = authHeader.split(" ")[1];
+  try {
+    const decodedPayload = jwt.verify(token, process.env.JWT_SECRET);
 
-    const validToken = process.env.TOKEN; // Get the valid token from the local environment
-
-    if (token !== validToken) {
-        res.status(403).send({ message: "Invalid token" });
-        return;
-    }
     next();
+  } catch (error) {
+    res.status(403).send({ message: "Invalid token" });
+  }
 };

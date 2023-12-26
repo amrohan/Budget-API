@@ -1,44 +1,62 @@
-import * as Transactions from '../models/transactionsModel';
+import * as Transactions from "../models/transactionsModel";
 import { DateTime } from "luxon";
-import { NextFunction, Request as ExpressRequest, Response as ExpressResponse } from 'express';
+import {
+  NextFunction,
+  Request as ExpressRequest,
+  Response as ExpressResponse,
+} from "express";
 
-export const all = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const all = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
     const doc = await Transactions.all();
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
-export const getTransactionByTransactionId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const getTransactionByTransactionId = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
     const doc = await Transactions.getTransactionByTransactionId(req.params.id);
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
-export const getTransactionsByUserId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const getTransactionsByUserId = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
     const doc = await Transactions.getTransactionsByUserId(req.params.userId);
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
-
-export const getTransactionByMonthandYear = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const getTransactionByMonthandYear = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
     // get headers from users
-    let timezone = req.headers['timezone'] as string;
+    let timezone = req.headers["timezone"] as string;
     let totalExpense = 0;
     let totalIncome = 0;
     const userId = req.params.userId;
-    if (!timezone)
-      timezone = 'Asia/Kolkata'
+    if (!timezone) timezone = "Asia/Kolkata";
     const monthNumber = parseInt(req.query.month as string, 10);
     const year = parseInt(req.query.year as string, 10);
 
@@ -63,47 +81,66 @@ export const getTransactionByMonthandYear = async (req: ExpressRequest, res: Exp
       .set({ hour: 23, minute: 59, second: 59, millisecond: 999 })
       .setZone(timezone);
 
-    let transaction = await Transactions.getTransactionByMonthandYear(userId, startOfMonthIST.toISO()!, endOfMonthIST.toISO()!);
+    let transaction = await Transactions.getTransactionByMonthandYear(
+      userId,
+      startOfMonthIST.toISO()!,
+      endOfMonthIST.toISO()!
+    );
     transaction.forEach((budget: any) => {
-      if (budget.type === "expense") {
+      if (budget.type === "Expense") {
         totalExpense += budget.amount;
-      } else if (budget.type === "income") {
+      } else if (budget.type === "Income") {
         totalIncome += budget.amount;
       }
     });
 
     res.status(200).send({ transaction, totalExpense, totalIncome });
+  } catch (error) {}
+};
 
-  } catch (error) {
-
-  }
-}
-
-
-export const create = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const create = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
+    const trans = req.body;
+    trans.createdAt = new Date();
+    trans.updatedAt = new Date();
+    trans.isDeleted = false;
+    trans.isActive = true;
     const doc = await Transactions.create(req.body);
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
-export const updateByTransactionId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const updateByTransactionId = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
-    const doc = await Transactions.updateByTransactionId(req.params.id, req.body);
+    const doc = await Transactions.updateByTransactionId(
+      req.params.id,
+      req.body
+    );
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
+};
 
-export const deleteByTransactionId = async (req: ExpressRequest, res: ExpressResponse, next: NextFunction) => {
+export const deleteByTransactionId = async (
+  req: ExpressRequest,
+  res: ExpressResponse,
+  next: NextFunction
+) => {
   try {
     const doc = await Transactions.deleteByTransactionId(req.params.id);
     res.json(doc);
   } catch (error) {
-    next()
+    next();
   }
-}
-
+};
